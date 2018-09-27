@@ -39,7 +39,7 @@ final class ResultsFilter {
 }
 
 
-final class Parser {
+public final class Parser {
 
     public struct JsonKeys {
         public static let cards = "cards"
