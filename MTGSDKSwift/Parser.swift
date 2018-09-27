@@ -41,43 +41,13 @@ final class ResultsFilter {
 
 public final class Parser {
 
-    public struct JsonKeys {
-        public static let cards = "cards"
-        public static let name = "name"
-        public static let names = "names"
-        public static let manaCost = "manaCost"
-        public static let cmc = "cmc"
-        public static let colors = "colors"
-        public static let colorIdentity = "colorIdentity"
-        public static let type = "type"
-        public static let supertypes = "supertypes"
-        public static let types = "types"
-        public static let subtypes = "subtypes"
-        public static let rarity = "rarity"
-        public static let set = "set"
-        public static let setName = "setName"
-        public static let text = "text"
-        public static let artist = "artist"
-        public static let number = "number"
-        public static let power = "power"
-        public static let toughness = "toughness"
-        public static let layout = "layout"
-        public static let multiverseid = "multiverseid"
-        public static let imageUrl = "imageUrl"
-        public static let rulings = "rulings"
-        public static let foreignNames = "foreignNames"
-        public static let printings = "printings"
-        public static let originalText = "originalText"
-        public static let originalType = "originalType"
-        public static let id = "id"
-        public static let loyalty = "loyalty"
-        public static let legalities = "legalities"
+    public init() { }
 
-        public static let legalitiesFormat = "format"
-        public static let legalitiesLegality = "legality"
-    }
-    
-     func parseCards(json: JSONResults) -> [Card] {
+    /// Parses the provided JSONResults into an array of cards.
+    ///
+    /// - Parameter json: The JSON to be parsed.
+    /// - Returns: An array of Card objects.
+    public func parseCards(json: JSONResults) -> [Card] {
 
         guard let cards = json[JsonKeys.cards] as? [[String:Any]] else {
             if Magic.enableLogging {
@@ -85,13 +55,13 @@ public final class Parser {
             }
             return [Card]()
         }
-        
+
         var cardsArray = [Card]()
-        
+
         for c in cards {
-            
+
             var card = Card()
-            
+
 
             if let name = c[JsonKeys.name] as? String {
                 card.name = name
@@ -186,33 +156,37 @@ public final class Parser {
                     card.legalities[format] = legality
                 }
             }
-            
+
             cardsArray.append(card)
-           
+
         }
-        
+
         if Magic.enableLogging {
             print("cards retreived: \(cardsArray.count)")
         }
-        
+
         return cardsArray
     }
-    
-    
-     func parseSets(json: JSONResults) -> [CardSet] {
-        
+
+
+    /// Parses the provided JSONResults into an array of CardSets.
+    ///
+    /// - Parameter json: The JSON to be parsed.
+    /// - Returns: An array of CardSet objects.
+    public func parseSets(json: JSONResults) -> [CardSet] {
+
         guard let cardSets = json["sets"] as? [[String:Any]] else {
             if Magic.enableLogging {
                 print("Parser parseSets - unexpected json: returning empty array")
             }
             return [CardSet]()
         }
-        
+
         var sets = [CardSet]()
-        
+
         for s in cardSets {
             var set = CardSet()
-            
+
             if let name = s["name"] as? String {
                 set.name = name
             }
@@ -237,15 +211,56 @@ public final class Parser {
             if let booster = s["booster"] as? [[String]] {
                 set.booster = booster
             }
-            
+
             sets.append(set)
         }
-        
+
         if Magic.enableLogging {
             print("sets retreived: \(sets.count)")
         }
         return sets
-        
+
+    }
+
+}
+
+public extension Parser {
+
+    /// The keys used by the parser for parsing Card objects.
+    public struct JsonKeys {
+        public static let cards = "cards"
+        public static let name = "name"
+        public static let names = "names"
+        public static let manaCost = "manaCost"
+        public static let cmc = "cmc"
+        public static let colors = "colors"
+        public static let colorIdentity = "colorIdentity"
+        public static let type = "type"
+        public static let supertypes = "supertypes"
+        public static let types = "types"
+        public static let subtypes = "subtypes"
+        public static let rarity = "rarity"
+        public static let set = "set"
+        public static let setName = "setName"
+        public static let text = "text"
+        public static let artist = "artist"
+        public static let number = "number"
+        public static let power = "power"
+        public static let toughness = "toughness"
+        public static let layout = "layout"
+        public static let multiverseid = "multiverseid"
+        public static let imageUrl = "imageUrl"
+        public static let rulings = "rulings"
+        public static let foreignNames = "foreignNames"
+        public static let printings = "printings"
+        public static let originalText = "originalText"
+        public static let originalType = "originalType"
+        public static let id = "id"
+        public static let loyalty = "loyalty"
+        public static let legalities = "legalities"
+
+        public static let legalitiesFormat = "format"
+        public static let legalitiesLegality = "legality"
     }
 
 }
