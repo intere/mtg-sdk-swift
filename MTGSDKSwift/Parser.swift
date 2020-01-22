@@ -36,10 +36,9 @@ final class ResultsFilter {
 
 public typealias CardMap = [String: Any]
 
-public final class Parser {
-    
-     static func parseCards(json: JSONResults) -> [Card] {
+public class Parser {
 
+    public static func parseCards(json: JSONResults) -> [Card] {
         guard let cards = json["cards"] as? [CardMap] else {
             debugPrint("MTGSDK Parser parseCards - unexpected json: returning empty array")
             return [Card]()
@@ -159,8 +158,9 @@ public final class Parser {
         debugPrint("MTGSDK cards retreived: \(cardsArray.count)")
         return cardsArray
     }
-    
-     static func parseSets(json: JSONResults) -> [CardSet] {
+
+
+    public static func parseSets(json: JSONResults) -> [CardSet] {
         
         guard let cardSets = json["sets"] as? [[String:Any]] else {
             debugPrint("MTGSDK Parser parseSets - unexpected json: returning empty array")
