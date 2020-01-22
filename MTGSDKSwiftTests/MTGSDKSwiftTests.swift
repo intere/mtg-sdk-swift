@@ -15,6 +15,7 @@ class MTGSDKSwiftTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
+        Magic.enableLogging = true
     }
 }
 
@@ -38,7 +39,7 @@ extension MTGSDKSwiftTests {
                 XCTFail("Error fetching cards: \(error.localizedDescription)")
             }
         }
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 30, handler: nil)
     }
 
     func testCardSearchWithCards() {
@@ -57,7 +58,7 @@ extension MTGSDKSwiftTests {
                 XCTFail("Error fetching cards: \(error.localizedDescription)")
             }
         }
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 30, handler: nil)
     }
 }
 
@@ -87,7 +88,7 @@ extension MTGSDKSwiftTests {
                 XCTFail("Error fetching cards: \(error.localizedDescription)")
             }
         }
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 30, handler: nil)
     }
 }
 

@@ -11,13 +11,15 @@ import Foundation
 final class ResultsFilter {
     
     /**
-     If an array of Card contains cards with identical names, likely due to multiple printings, this function leaves only one version of that card. You will only have one "Scathe Zombie" instead of 5 "Scathe Zombie", the only difference between them being the set they were printed in.
+     If an array of Card contains cards with identical names, likely due to multiple printings, this function leaves only one version of that card. You will only have one "Scathe Zombies" instead of 5 "Scathe Zombie", the only difference between them being the set they were printed in.
+     
      
      - parameter cards: [Card]
      - returns: [Card] consisting of Cards without duplicate names
  */
 
-    static public func removeDuplicateCardsByName(_ cards: [Card]) -> [Card] {
+    public static func removeDuplicateCardsByName(_ cards: [Card]) -> [Card] {
+        
         var uniqueNames = [String]()
         var uniqueCards = [Card]()
         
@@ -43,11 +45,11 @@ public class Parser {
             debugPrint("MTGSDK Parser parseCards - unexpected json: returning empty array")
             return [Card]()
         }
-        
+
         var cardsArray = [Card]()
-        
+
         for c in cards {
-            
+
             var card = Card()
             
             if let name = c[CardJsonKey.name] as? String {
@@ -150,9 +152,9 @@ public class Parser {
                     card.legalities[format] = legality
                 }
             }
-            
+
             cardsArray.append(card)
-           
+
         }
         
         debugPrint("MTGSDK cards retreived: \(cardsArray.count)")
@@ -166,12 +168,12 @@ public class Parser {
             debugPrint("MTGSDK Parser parseSets - unexpected json: returning empty array")
             return [CardSet]()
         }
-        
+
         var sets = [CardSet]()
-        
+
         for s in cardSets {
             var set = CardSet()
-            
+
             if let name = s["name"] as? String {
                 set.name = name
             }
@@ -196,7 +198,7 @@ public class Parser {
             if let booster = s["booster"] as? [[String]] {
                 set.booster = booster
             }
-            
+
             sets.append(set)
         }
         
