@@ -9,12 +9,7 @@
 import Foundation
 
 public typealias JSONResults = [String:Any]
-public typealias JSONCompletionWithError = (Result<JSONResults>) -> Void
-
-public enum Result<T> {
-    case success(T)
-    case error(NetworkError)
-}
+public typealias JSONCompletionWithError = (Swift.Result<JSONResults, NetworkError>) -> Void
 
 final class MTGAPIService {
 
@@ -31,8 +26,8 @@ final class MTGAPIService {
             switch result {
             case .success(let json):
                 completion(Result.success(json))
-            case .error(let error):
-                completion(Result.error(error))
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
@@ -56,11 +51,11 @@ final private class NetworkOperation {
         let dataTask = session.dataTask(with: request) { data, response, error in
 
             if let error = error {
-                return completion(Result.error(NetworkError.requestError(error)))
+                return completion(.failure(NetworkError.requestError(error)))
             }
 
             guard let data = data else {
-                return completion(Result.error(NetworkError.miscError("Network operation - No data returned")))
+                return completion(.failure(NetworkError.miscError("Network operation - No data returned")))
             }
 
             if let httpResponse = (response as? HTTPURLResponse) {
@@ -70,18 +65,18 @@ final private class NetworkOperation {
                 case 200..<300:
                     break
                 default:
-                    return completion(Result.error(NetworkError.unexpectedHTTPResponse(httpResponse)))
+                    return completion(.failure(NetworkError.unexpectedHTTPResponse(httpResponse)))
                 }
             }
             
             do {
                 let jsonResponse = try JSONSerialization.jsonObject(with: data, options: [])
                 guard let json = jsonResponse as? JSONResults else {
-                    return completion(Result.error(NetworkError.miscError("Network operation - invalid json response")))
+                    return completion(.failure(NetworkError.miscError("Network operation - invalid json response")))
                 }
-                completion(Result.success(json))
+                completion(.success(json))
             } catch {
-                completion(Result.error(NetworkError.miscError("json serialization error")))
+                completion(.failure(NetworkError.miscError("json serialization error")))
             }
         }
         

@@ -34,7 +34,7 @@ extension MTGSDKSwiftTests {
             switch result {
             case .success(let cards):
                 XCTAssertTrue(cards.count == 0, "Results came back")
-            case .error(let error):
+            case .failure(let error):
                 XCTFail("Error fetching cards: \(error.localizedDescription)")
             }
         }
@@ -53,7 +53,7 @@ extension MTGSDKSwiftTests {
             switch result {
             case .success(let cards):
                 XCTAssertTrue(cards.count > 0, "No card results came back")
-            case .error(let error):
+            case .failure(let error):
                 XCTFail("Error fetching cards: \(error.localizedDescription)")
             }
         }
@@ -78,9 +78,12 @@ extension MTGSDKSwiftTests {
             
             switch result {
             case .success(let cards):
-                XCTAssertEqual(cardName, cards.first?.name)
-                XCTAssertEqual(6, cards.first?.loyalty)
-            case .error(let error):
+                guard let first = cards.first else {
+                    return XCTFail("No results")
+                }
+                XCTAssertEqual(cardName, first.name)
+                XCTAssertTrue(first.printings?.contains("MM2") ?? false)
+            case .failure(let error):
                 XCTFail("Error fetching cards: \(error.localizedDescription)")
             }
         }
@@ -105,7 +108,7 @@ extension MTGSDKSwiftTests {
             switch result {
             case .success:
                 break
-            case .error(let error):
+            case .failure(let error):
                 XCTFail("Error getting image: \(error.localizedDescription)")
             }
         }
@@ -125,7 +128,7 @@ extension MTGSDKSwiftTests {
             switch result {
             case .success:
                 XCTFail("Got an image back for a card without an image")
-            case .error:
+            case .failure:
                 break
             }
         }

@@ -9,9 +9,9 @@
 import UIKit
 
 final public class Magic {
-    public typealias CardImageCompletion = (Result<UIImage>) -> Void
-    public typealias CardCompletion = (Result<[Card]>) -> Void
-    public typealias SetCompletion = (Result<[CardSet]>) -> Void
+    public typealias CardImageCompletion = (Result<UIImage, NetworkError>) -> Void
+    public typealias CardCompletion = (Result<[Card], NetworkError>) -> Void
+    public typealias SetCompletion = (Result<[CardSet], NetworkError>) -> Void
 
     /// Should the Magic API log messages to the `print` function?  Defaults to true.
     public static var enableLogging = true
@@ -31,26 +31,19 @@ final public class Magic {
     public func fetchCards(_ parameters: [CardSearchParameter],
                            configuration: MTGSearchConfiguration = .defaultConfiguration,
                            completion: @escaping CardCompletion) {
-        var networkError: NetworkError? {
-            didSet {
-                completion(Result.error(networkError!))
-            }
-        }
         
         guard let url = URLBuilder.buildURLWithParameters(parameters, andConfig: configuration) else {
-            networkError = NetworkError.miscError("fetchCards url build failed")
-            return
+            return completion(.failure(NetworkError.miscError("fetchCards url build failed")))
         }
         
-        mtgAPIService.mtgAPIQuery(url: url) {
-            result in
+        mtgAPIService.mtgAPIQuery(url: url) { result in
             switch result {
             case .success(let json):
                 let cards = Parser.parseCards(json: json)
-                completion(Result.success(cards))
+                completion(.success(cards))
 
-            case .error(let error):
-                networkError = error
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
@@ -66,18 +59,17 @@ final public class Magic {
                           configuration: MTGSearchConfiguration = .defaultConfiguration,
                           completion: @escaping SetCompletion) {
         guard let url = URLBuilder.buildURLWithParameters(parameters, andConfig: configuration) else {
-            return completion(Result.error(NetworkError.miscError("fetchSets url build failed")))
+            return completion(.failure(NetworkError.miscError("fetchSets url build failed")))
         }
         
-        mtgAPIService.mtgAPIQuery(url: url) {
-            result in
+        mtgAPIService.mtgAPIQuery(url: url) { result in
             switch result {
             case .success(let json):
                 let sets = Parser.parseSets(json: json)
-                completion(Result.success(sets))
+                completion(.success(sets))
 
-            case .error(let error):
-                completion(Result.error(error))
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
@@ -93,26 +85,17 @@ final public class Magic {
                           configuration: MTGSearchConfiguration = .defaultConfiguration,
                           completion: @escaping JSONCompletionWithError) {
         
-        var networkError: NetworkError? {
-            didSet {
-                completion(Result.error(networkError!))
-            }
-        }
-        
         guard let url = URLBuilder.buildURLWithParameters(parameters, andConfig: configuration) else {
-            networkError = NetworkError.miscError("fetchJSON url build failed")
-            return
+            return completion(.failure(NetworkError.miscError("fetchJSON url build failed")))
         }
         
-        mtgAPIService.mtgAPIQuery(url: url) {
-            result in
+        mtgAPIService.mtgAPIQuery(url: url) { result in
             switch result {
             case .success:
                 completion(result)
 
-            case .error(let error):
-                networkError = NetworkError.requestError(error)
-                return
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
@@ -124,21 +107,21 @@ final public class Magic {
     ///   - completion: The completion handler (for success / failure response).
     public func fetchImageForCard(_ card: Card, completion: @escaping CardImageCompletion) {
         guard let imgurl = card.imageUrl else {
-            return completion(Result.error(NetworkError.fetchCardImageError("fetchImageForCard card imageURL was nil")))
+            return completion(.failure(NetworkError.fetchCardImageError("fetchImageForCard card imageURL was nil")))
         }
         
         guard let url = URL(string: imgurl) else {
-            return completion(Result.error(NetworkError.fetchCardImageError("fetchImageForCard url build failed")))
+            return completion(.failure(NetworkError.fetchCardImageError("fetchImageForCard url build failed")))
         }
         
         do {
             let data = try Data(contentsOf: url)
             guard let img = UIImage(data: data) else {
-                return completion(Result.error(NetworkError.fetchCardImageError("could not create uiimage from data")))
+                return completion(.failure(NetworkError.fetchCardImageError("could not create uiimage from data")))
             }
-            completion(Result.success(img))
+            completion(.success(img))
         } catch {
-            completion(Result.error(NetworkError.fetchCardImageError("data from contents of url failed")))
+            completion(.failure(NetworkError.fetchCardImageError("data from contents of url failed")))
         }
     }
 
@@ -151,18 +134,17 @@ final public class Magic {
         let urlString = Constants.baseEndpoint + setCode + Constants.generateBoosterPath
         
         guard let url = URL(string: urlString) else {
-            return completion(Result.error(NetworkError.miscError("generateBooster - build url fail")))
+            return completion(.failure(NetworkError.miscError("generateBooster - build url fail")))
         }
         
-        mtgAPIService.mtgAPIQuery(url: url) {
-            result in
+        mtgAPIService.mtgAPIQuery(url: url) { result in
             switch result {
             case .success(let json):
                 let cards = Parser.parseCards(json: json)
-                completion(Result.success(cards))
+                completion(.success(cards))
 
-            case .error(let error):
-                completion(Result.error(error))
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
