@@ -34,11 +34,13 @@ final class ResultsFilter {
     }
 }
 
-final class Parser {
+public typealias CardMap = [String: Any]
+
+public final class Parser {
     
      static func parseCards(json: JSONResults) -> [Card] {
 
-        guard let cards = json["cards"] as? [[String:Any]] else {
+        guard let cards = json["cards"] as? [CardMap] else {
             debugPrint("MTGSDK Parser parseCards - unexpected json: returning empty array")
             return [Card]()
         }
@@ -49,98 +51,98 @@ final class Parser {
             
             var card = Card()
             
-            if let name = c["name"] as? String {
+            if let name = c[CardJsonKey.name] as? String {
                 card.name = name
             }
-            if let names = c["names"] as? [String] {
+            if let names = c[CardJsonKey.names] as? [String] {
                 card.names = names
             }
-            if let manaCost = c["manaCost"] as? String {
+            if let manaCost = c[CardJsonKey.manaCost] as? String {
                 card.manaCost = manaCost
             }
-            if let cmc = c["cmc"] as? Int {
+            if let cmc = c[CardJsonKey.cmc] as? Int {
                 card.cmc = cmc
             }
-            if let colors = c["colors"] as? [String] {
+            if let colors = c[CardJsonKey.colors] as? [String] {
                 card.colors = colors
             }
-            if let colorIdentiy = c["colorIdentity"] as? [String] {
-                card.colorIdentity = colorIdentiy
+            if let colorIdentity = c[CardJsonKey.colorIdentity] as? [String] {
+                card.colorIdentity = colorIdentity
             }
-            if let type = c["type"] as? String {
+            if let type = c[CardJsonKey.type] as? String {
                 card.type = type
             }
-            if let supertypes = c["supertypes"] as? [String] {
+            if let supertypes = c[CardJsonKey.supertypes] as? [String] {
                 card.supertypes = supertypes
             }
-            if let types = c["types"] as? [String] {
+            if let types = c[CardJsonKey.types] as? [String] {
                 card.types = types
             }
-            if let subtypes = c["subtypes"] as? [String] {
+            if let subtypes = c[CardJsonKey.subtypes] as? [String] {
                 card.subtypes = subtypes
             }
-            if let rarity = c["rarity"] as? String {
+            if let rarity = c[CardJsonKey.rarity] as? String {
                 card.rarity = rarity
             }
-            if let set = c["set"] as? String {
+            if let set = c[CardJsonKey.set] as? String {
                 card.set = set
             }
-            if let setName = c["setName"] as? String {
+            if let setName = c[CardJsonKey.setName] as? String {
                 card.setName = setName
             }
-            if let text = c["text"] as? String {
+            if let text = c[CardJsonKey.text] as? String {
                 card.text = text
             }
-            if let artist = c["artist"] as? String {
+            if let artist = c[CardJsonKey.artist] as? String {
                 card.artist = artist
             }
-            if let number = c["number"] as? String {
+            if let number = c[CardJsonKey.number] as? String {
                 card.number = number
             }
-            if let power = c["power"] as? String {
+            if let power = c[CardJsonKey.power] as? String {
                 card.power = power
             }
-            if let toughness = c["toughness"] as? String {
+            if let toughness = c[CardJsonKey.toughness] as? String {
                 card.toughness = toughness
             }
-            if let layout = c["layout"] as? String {
+            if let layout = c[CardJsonKey.layout] as? String {
                 card.layout = layout
             }
-            if let multiverseid = c["multiverseid"] as? Int {
+            if let multiverseid = c[CardJsonKey.multiverseid] as? Int {
                 card.multiverseid = multiverseid
             }
-            if let imageUrl = c["imageUrl"] as? String {
+            if let imageUrl = c[CardJsonKey.imageUrl] as? String {
                 card.imageUrl = imageUrl
             }
-            if let rulings = c["rulings"] as? [[String:String]] {
+            if let rulings = c[CardJsonKey.rulings] as? [[String:String]] {
                 card.rulings = rulings
             }
-            if let foreignNames = c["foreignNames"] as? [[String:String]] {
+            if let foreignNames = c[CardJsonKey.foreignNames] as? [[String:String]] {
                 card.foreignNames = foreignNames
             }
-            if let printings = c["printings"] as? [String] {
+            if let printings = c[CardJsonKey.printings] as? [String] {
                 card.printings = printings
             }
-            if let originalText = c["originalText"] as? String {
+            if let originalText = c[CardJsonKey.originalText] as? String {
                 card.originalText = originalText
             }
-            if let originalType = c["originalType"] as? String {
+            if let originalType = c[CardJsonKey.originalType] as? String {
                 card.originalType = originalType
             }
-            if let id = c["id"] as? String {
+            if let id = c[CardJsonKey.id] as? String {
                 card.id = id
             }
-            if let loyalty = c["loyalty"] as? Int {
+            if let loyalty = c[CardJsonKey.loyalty] as? Int {
                 card.loyalty = loyalty
             }
-            if let format = c["gameFormat"] as? String {
+            if let format = c[CardJsonKey.gameFormat] as? String {
                 card.gameFormat = format
             }
            
-            if let releaseDate = c["releaseDate"] as? String {
+            if let releaseDate = c[CardJsonKey.releaseDate] as? String {
                 card.releaseDate = releaseDate
             }
-            if let legalities = c["legalities"] as? [[String: String]] {
+            if let legalities = c[CardJsonKey.legalities] as? [[String: String]] {
                 for pair in legalities {
                     guard let format = pair["format"],
                         let legality = pair["legality"] else {
@@ -202,4 +204,53 @@ final class Parser {
         
         return sets
     }
+}
+
+extension CardMap {
+
+    subscript(index: Parser.CardJsonKey) -> Any? {
+        return self[index.rawValue]
+    }
+}
+
+public extension Parser {
+
+    /// The keys used by the parser for parsing Card objects.
+    enum CardJsonKey: String {
+        case cards = "cards"
+        case name = "name"
+        case names = "names"
+        case manaCost = "manaCost"
+        case cmc = "cmc"
+        case colors = "colors"
+        case colorIdentity = "colorIdentity"
+        case type = "type"
+        case supertypes = "supertypes"
+        case types = "types"
+        case subtypes = "subtypes"
+        case rarity = "rarity"
+        case set = "set"
+        case setName = "setName"
+        case text = "text"
+        case artist = "artist"
+        case number = "number"
+        case power = "power"
+        case toughness = "toughness"
+        case layout = "layout"
+        case multiverseid = "multiverseid"
+        case imageUrl = "imageUrl"
+        case rulings = "rulings"
+        case foreignNames = "foreignNames"
+        case printings = "printings"
+        case originalText = "originalText"
+        case originalType = "originalType"
+        case id = "id"
+        case loyalty = "loyalty"
+        case legalities = "legalities"
+        case legalitiesFormat = "format"
+        case legalitiesLegality = "legality"
+        case gameFormat = "gameFormat"
+        case releaseDate = "releaseDate"
+    }
+
 }
