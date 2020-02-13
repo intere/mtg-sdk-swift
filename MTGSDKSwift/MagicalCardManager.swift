@@ -32,7 +32,7 @@ final public class Magic {
                            configuration: MTGSearchConfiguration = .defaultConfiguration,
                            completion: @escaping CardCompletion) {
         
-        guard let url = URLBuilder.buildURLWithParameters(parameters, andConfig: configuration) else {
+        guard let url = URLBuilder.buildCardSearchUrl(parameters: parameters, andConfig: configuration) else {
             return completion(.failure(NetworkError.miscError("fetchCards url build failed")))
         }
         
@@ -58,7 +58,7 @@ final public class Magic {
     public func fetchSets(_ parameters: [SetSearchParameter],
                           configuration: MTGSearchConfiguration = .defaultConfiguration,
                           completion: @escaping SetCompletion) {
-        guard let url = URLBuilder.buildURLWithParameters(parameters, andConfig: configuration) else {
+        guard let url = URLBuilder.buildSetSearchUrl(parameters: parameters, andConfig: configuration) else {
             return completion(.failure(NetworkError.miscError("fetchSets url build failed")))
         }
         
@@ -67,32 +67,6 @@ final public class Magic {
             case .success(let json):
                 let sets = Parser.parseSets(json: json)
                 completion(.success(sets))
-
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-
-    /// Fetch JSON returns the raw json data rather than an Array of Card or CardSet. It will return json
-    /// for sets or cards depending on what you feed it.
-    ///
-    /// - Parameters:
-    ///   - parameters: either [CardSearchParameter] or [SetSearchParameter]
-    ///   - configuration: The Search Configuration, defaults to `.defaultConfiguration`.
-    ///   - completion: The completion handler (for success / failure response).
-    public func fetchJSON(_ parameters: [SearchParameter],
-                          configuration: MTGSearchConfiguration = .defaultConfiguration,
-                          completion: @escaping JSONCompletionWithError) {
-        
-        guard let url = URLBuilder.buildURLWithParameters(parameters, andConfig: configuration) else {
-            return completion(.failure(NetworkError.miscError("fetchJSON url build failed")))
-        }
-        
-        mtgAPIService.mtgAPIQuery(url: url) { result in
-            switch result {
-            case .success:
-                completion(result)
 
             case .failure(let error):
                 completion(.failure(error))

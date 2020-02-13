@@ -9,27 +9,38 @@
 import Foundation
 
 final class URLBuilder {
+
+    static func buildCardSearchUrl(parameters: [CardSearchParameter], andConfig config: MTGSearchConfiguration = MTGSearchConfiguration.defaultConfiguration) -> URL? {
+        return buildURLWithParameters(parameters, path: Constants.cardsEndpoint, andConfig: config)
+    }
+
+    static func buildSetSearchUrl(parameters: [SetSearchParameter], andConfig config: MTGSearchConfiguration = MTGSearchConfiguration.defaultConfiguration) -> URL? {
+        return buildURLWithParameters(parameters, path: Constants.setsEndpoint, andConfig: config)
+    }
+
+}
+
+// MARK: - Implementation
+
+private extension URLBuilder {
+
     static func buildURLWithParameters(_ parameters: [SearchParameter],
-                                andConfig config: MTGSearchConfiguration = MTGSearchConfiguration.defaultConfiguration) -> URL? {
+                                       path: String,
+                                       andConfig config: MTGSearchConfiguration) -> URL? {
         var urlComponents = URLComponents()
         urlComponents.scheme = Constants.scheme
         urlComponents.host = Constants.host
-        urlComponents.path = {
-            if parameters is [CardSearchParameter] {
-                return Constants.cardsEndpoint
-            } else {
-                return Constants.setsEndpoint
-            }
-        }()
-        
+        urlComponents.path = path
         urlComponents.queryItems = buildQueryItemsFromParameters(parameters, config)
-        
-        debugPrint("MTGSDK URL: \(String(describing: urlComponents.url))\n")
+
+        if let url = urlComponents.url {
+            debugPrint("MTGSDK URL: \(String(describing: url))\n")
+        }
         
         return urlComponents.url
     }
     
-    private static func buildQueryItemsFromParameters(_ parameters: [SearchParameter],
+    static func buildQueryItemsFromParameters(_ parameters: [SearchParameter],
                                                _ config: MTGSearchConfiguration = MTGSearchConfiguration.defaultConfiguration) -> [URLQueryItem] {
         var queryItems = [URLQueryItem]()
         

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36A13B0323F57EC100AD4D0D /* TestBugMtg1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A13B0223F57EC100AD4D0D /* TestBugMtg1.swift */; };
 		36A5C33E215C9710007E280E /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A5C33D215C9710007E280E /* ParserTests.swift */; };
 		5B18A9821E69EB0B0026E648 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B18A9811E69EB0B0026E648 /* NetworkError.swift */; };
 		5B6092D9215EA8E000CDD46A /* Resources in Resources */ = {isa = PBXBuildFile; fileRef = 5B6092D8215EA8DF00CDD46A /* Resources */; };
@@ -63,6 +64,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		36A13B0223F57EC100AD4D0D /* TestBugMtg1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestBugMtg1.swift; sourceTree = "<group>"; };
 		36A5C33D215C9710007E280E /* ParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
 		5B18A9811E69EB0B0026E648 /* NetworkError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		5B6092D8215EA8DF00CDD46A /* Resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources; sourceTree = "<group>"; };
@@ -117,6 +119,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		36A13AFF23F57E9400AD4D0D /* Bugs */ = {
+			isa = PBXGroup;
+			children = (
+				36A13B0223F57EC100AD4D0D /* TestBugMtg1.swift */,
+			);
+			path = Bugs;
+			sourceTree = "<group>";
+		};
 		5B6092D5215EA5F400CDD46A /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -175,6 +185,7 @@
 		5BD04DB61E64943C00E5ED27 /* MTGSDKSwiftTests */ = {
 			isa = PBXGroup;
 			children = (
+				36A13AFF23F57E9400AD4D0D /* Bugs */,
 				5B6092D8215EA8DF00CDD46A /* Resources */,
 				5BD04DB71E64943C00E5ED27 /* MTGSDKSwiftTests.swift */,
 				5BD04DB91E64943C00E5ED27 /* Info.plist */,
@@ -297,6 +308,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -372,6 +384,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				36A5C33E215C9710007E280E /* ParserTests.swift in Sources */,
+				36A13B0323F57EC100AD4D0D /* TestBugMtg1.swift in Sources */,
 				5BD04DB81E64943C00E5ED27 /* MTGSDKSwiftTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
